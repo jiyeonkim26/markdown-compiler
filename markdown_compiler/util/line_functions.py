@@ -233,6 +233,32 @@ def compile_bold_underscore(line):
 
 
 def compile_code_inline(line):
+    '''
+    Add <code> tags.
+
+    HINT:
+    This function is like the italics functions because inline code uses only a single character as a delimiter.
+    It is more complex, however, because inline code blocks can contain valid HTML inside of them,
+    but we do not want that HTML to get rendered as HTML.
+    Therefore, we must convert the `<` and `>` signs into `&lt;` and `&gt;` respectively.
+
+    >>> compile_code_inline('You can use backticks like this (`1+2`) to include code in the middle of text.')
+    'You can use backticks like this (<code>1+2</code>) to include code in the middle of text.'
+    >>> compile_code_inline('This is inline code: `1+2`')
+    'This is inline code: <code>1+2</code>'
+    >>> compile_code_inline('`1+2`')
+    '<code>1+2</code>'
+    >>> compile_code_inline('This example has html within the code: `<b>bold!</b>`')
+    'This example has html within the code: <code>&lt;b&gt;bold!&lt;/b&gt;</code>'
+    >>> compile_code_inline('this example has a math formula in the  code: `1 + 2 < 4`')
+    'this example has a math formula in the  code: <code>1 + 2 &lt; 4</code>'
+    >>> compile_code_inline('this example has a <b>math formula</b> in the  code: `1 + 2 < 4`')
+    'this example has a <b>math formula</b> in the  code: <code>1 + 2 &lt; 4</code>'
+    >>> compile_code_inline('```')
+    '```'
+    >>> compile_code_inline('```python3')
+    '```python3'
+    '''
     accumulator = ''
     has_opened = False
     for char in line:
@@ -249,6 +275,22 @@ def compile_code_inline(line):
 
 
 def compile_links(line):
+    '''
+    Add <a> tags.
+
+    HINT:
+    The links and images are potentially more complicated because they have many types of delimeters: `[]()`.
+    These delimiters are not symmetric, however, so we can more easily find the start and stop locations using the strings find function.
+
+    >>> compile_links('Click on the [course webpage](https://github.com/mikeizbicki/cmc-csci040)!')
+    'Click on the <a href="https://github.com/mikeizbicki/cmc-csci040">course webpage</a>!'
+    >>> compile_links('[course webpage](https://github.com/mikeizbicki/cmc-csci040)')
+    '<a href="https://github.com/mikeizbicki/cmc-csci040">course webpage</a>'
+    >>> compile_links('this is wrong: [course webpage]    (https://github.com/mikeizbicki/cmc-csci040)')
+    'this is wrong: [course webpage]    (https://github.com/mikeizbicki/cmc-csci040)'
+    >>> compile_links('this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040')
+    'this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040'
+    '''
     start_text = line.find("[")
     end_text = line.find("]", start_text + 1)
     end_link = line.find(')', end_text + 2)
@@ -265,6 +307,21 @@ def compile_links(line):
 
 
 def compile_images(line):
+    '''
+    Add <img> tags.
+
+    HINT:
+    Images are formatted in markdown almost exactly the same as links,
+    except that images have a leading `!`.
+    So your code here should be based off of the <a> tag code.
+
+    >>> compile_images('[Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
+    '[Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)'
+    >>> compile_images('![Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
+    '<img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
+    >>> compile_images('This is an image of Mike Izbicki: ![Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
+    'This is an image of Mike Izbicki: <img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
+    '''
     start_text = line.find("!")
     if start_text + 1 >= len(line) or line[start_text + 1] != "[":
         return line
