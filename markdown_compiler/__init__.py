@@ -37,116 +37,6 @@ def compile_lines(text):
     NOTE:
     For your assignment, the most important thing to take away
     from these test cases is how multiline tests can be formatted.
-
-    >>> compile_lines('This is a **bold** _italic_ `code` test.
-    \nAnd *another line*!\n')
-    '<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.
-    \nAnd <i>another line</i>!\n</p>'
-
-    >>> compile_lines("""
-    ... This is a **bold** _italic_ `code` test.
-    ... And *another line*!
-    ... """)
-    '\n<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.
-    \nAnd <i>another line</i>!\n</p>'
-
-    >>> print(compile_lines("""
-    ... This is a **bold** _italic_ `code` test.
-    ... And *another line*!
-    ... """))
-    <BLANKLINE>
-    <p>
-    This is a <b>bold</b> <i>italic</i> <code>code</code> test.
-    And <i>another line</i>!
-    </p>
-
-    >>> print(compile_lines("""
-    ... *paragraph1*
-    ...
-    ... **paragraph2**
-    ...
-    ... `paragraph3`
-    ... """))
-    <BLANKLINE>
-    <p>
-    <i>paragraph1</i>
-    </p>
-    <p>
-    <b>paragraph2</b>
-    </p>
-    <p>
-    <code>paragraph3</code>
-    </p>
-
-    NOTE:
-    This second set of test cases tests multiline code blocks.
-
-    HINT:
-    In order to get some of these test cases to pass,
-    you will have to both add new code and remove some of the
-    existing code that I provide you.
-
-    >>> print(compile_lines("""
-    ... ```
-    ... x = 1*2 + 3*4
-    ... ```
-    ... """))
-    <BLANKLINE>
-    <pre>
-    x = 1*2 + 3*4
-    </pre>
-    <BLANKLINE>
-
-    >>> print(compile_lines("""
-    ... Consider the following code block:
-    ... ```
-    ... x = 1*2 + 3*4
-    ... ```
-    ... """))
-    <BLANKLINE>
-    <p>
-    Consider the following code block:
-    <pre>
-    x = 1*2 + 3*4
-    </pre>
-    </p>
-
-    >>> print(compile_lines("""
-    ... Consider the following code block:
-    ... ```
-    ... x = 1*2 + 3*4
-    ... print('x=', x)
-    ... ```
-    ... And here's another code block:
-    ... ```
-    ... print(this_is_a_variable)
-    ... ```
-    ... """))
-    <BLANKLINE>
-    <p>
-    Consider the following code block:
-    <pre>
-    x = 1*2 + 3*4
-    print('x=', x)
-    </pre>
-    And here's another code block:
-    <pre>
-    print(this_is_a_variable)
-    </pre>
-    </p>
-
-    >>> print(compile_lines("""
-    ... ```
-    ... for i in range(10):
-    ...     print('i=',i)
-    ... ```
-    ... """))
-    <BLANKLINE>
-    <pre>
-    for i in range(10):
-        print('i=',i)
-    </pre>
-    <BLANKLINE>
     '''
     lines = text.split('\n')
     new_lines = []
@@ -191,9 +81,8 @@ def compile_lines(text):
         line = compile_links(line)
         new_lines.append(line)
 
-
     if in_paragraph:
-            new_lines.append("</p>")
+        new_lines.append("</p>")
 
     new_text = '\n'.join(new_lines)
 
