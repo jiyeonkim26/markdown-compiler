@@ -156,18 +156,25 @@ def compile_strikethrough(line):
     >>> compile_strikethrough('~~')
     '~~'
     '''
+    if line.count('~~') < 2:
+        return line
+
     accumulator = ''
     has_opened = False
-    for char in line:
-        if char == '~~':
+    i = 0
+
+    while i < len(line):
+        if line[i:i + 2] == '~~':
             if not has_opened:
                 accumulator += '<ins>'
                 has_opened = True
             else:
                 accumulator += '</ins>'
                 has_opened = False
+            i += 2
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
     return accumulator
 
 
@@ -282,7 +289,7 @@ def compile_code_inline(line):
     >>> compile_code_inline('```python3')
     '```python3'
     '''
-    if line.count('`') < 1:
+    if line.count('`') < 2 or line.count('`') % 2 != 0:
         return line
 
     accumulator = ''
