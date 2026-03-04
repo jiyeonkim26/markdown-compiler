@@ -237,13 +237,17 @@ def compile_code_inline(line):
     Add <code> tags.
 
     HINT:
-    This function is like the italics functions because inline code uses only a single character as a delimiter.
-    It is more complex, however, because inline code blocks can contain valid HTML inside of them,
-    but we do not want that HTML to get rendered as HTML.
-    Therefore, we must convert the `<` and `>` signs into `&lt;` and `&gt;` respectively.
+    This function is like the italics functions because
+    inline code uses only a single character as a delimiter.
+    It is more complex, however, because inline code blocks
+    can contain valid HTML inside of them, but we do not want
+    that HTML to get rendered as HTML. Therefore, we must convert
+    the `<` and `>` signs into `&lt;` and `&gt;` respectively.
 
-    >>> compile_code_inline('You can use backticks like this (`1+2`) to include code in the middle of text.')
-    'You can use backticks like this (<code>1+2</code>) to include code in the middle of text.'
+    >>> compile_code_inline('You can use backticks like this (`1+2`)
+    ... to include code in the middle of text.')
+    'You can use backticks like this (<code>1+2</code>) to include
+    ... code in the middle of text.'
     >>> compile_code_inline('This is inline code: `1+2`')
     'This is inline code: <code>1+2</code>'
     >>> compile_code_inline('`1+2`')
