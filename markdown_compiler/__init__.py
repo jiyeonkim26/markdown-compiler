@@ -156,7 +156,7 @@ def compile_lines(text):
 
     for line in lines:
         stripped = line.strip()
-        if stripped == "```":   # was there a ``` ? --> close the code block
+        if stripped == "```":  # was there a ``` ? --> close the code block
             if in_code:
                 new_lines.append("</pre>")
                 in_code = False
@@ -190,6 +190,11 @@ def compile_lines(text):
         line = compile_images(line)
         line = compile_links(line)
         new_lines.append(line)
+
+
+    if in_paragraph:
+            new_lines.append("</p>")
+
     new_text = '\n'.join(new_lines)
 
     return new_text
