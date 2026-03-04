@@ -26,6 +26,23 @@ def compile_headers(line):
     >>> compile_headers('      # this is not a header')
     '      # this is not a header'
     '''
+    if line[:2] == '# ':
+        # why doesn't this line do anything?
+        # answer: strings are *immutable* in python; i.e. they can never change
+        # so functions that seem like they should change the string
+        # actually just return a new string
+        # without line = line.replace the replacement is not assigned to the line
+        line = line.replace('# ', '<h1> ') + '</h1>'
+    if line[:3] == '## ':
+        line = line.replace('## ', '<h2> ') + '</h2>'
+    if line[:4] == '### ':
+        line = line.replace('### ', '<h3> ') + '</h3>'
+    if line[:5] == '#### ':
+        line = line.replace('#### ', '<h4> ') + '</h4>'
+    if line[:6] == '##### ':
+        line = line.replace('##### ', '<h5> ') + '</h5>'
+    if line[:7] == '###### ':
+        line = line.replace('###### ', '<h6> ') + '</h6>'
     return line
 
 
@@ -50,7 +67,25 @@ def compile_italic_star(line):
     >>> compile_italic_star('*')
     '*'
     '''
-    return line
+    accumulator = ''
+    has_opened = False # meaning: have we seen a * yet?
+    for char in line:
+        # print is useful for debugging to help you understand what the code is doing
+        #print(char)
+        # super common mistake is to either put '' where they don't belong
+        # or not use '' when needed
+        if char == '*':
+            if not has_opened:
+                accumulator += '<i>'
+                has_opened = True
+            else:
+                accumulator += '</i>'
+                has_opened = False
+            # clever way:
+            # has_opened = not has_opened
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_italic_underscore(line):
@@ -71,7 +106,25 @@ def compile_italic_underscore(line):
     >>> compile_italic_underscore('_')
     '_'
     '''
-    return line
+    accumulator = ''
+    has_opened = False # meaning: have we seen a _ yet?
+    for char in line:
+        # print is useful for debugging to help you understand what the code is doing
+        # print(char)
+        # super common mistake is to either put '' where they don't belong
+        # or not use '' when needed
+        if char == '_':
+            if not has_opened:
+                accumulator += '<i>'
+                has_opened = True
+            else:
+                accumulator += '</i>'
+                has_opened = False
+            # clever way:
+            # has_opened = not has_opened
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_strikethrough(line):
@@ -94,7 +147,19 @@ def compile_strikethrough(line):
     >>> compile_strikethrough('~~')
     '~~'
     '''
-    return line
+    accumulator = ''
+    has_opened = False
+    for char in line:
+        if char == '~~':
+            if not has_opened:
+                accumulator += '<ins>'
+                has_opened = True
+            else:
+                accumulator += '</ins>'
+                has_opened = False
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_bold_stars(line):
@@ -115,7 +180,21 @@ def compile_bold_stars(line):
     >>> compile_bold_stars('**')
     '**'
     '''
-    return line
+    accumulator = ''
+    has_opened = False
+    for char in line:
+        if char == '**':
+            if not has_opened:
+                accumulator += '<b>'
+                has_opened = True
+            else:
+                accumulator += '</b>'
+                has_opened = False
+            # clever way:
+            # has_opened = not has_opened
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_bold_underscore(line):
@@ -136,7 +215,21 @@ def compile_bold_underscore(line):
     >>> compile_bold_underscore('__')
     '__'
     '''
-    return line
+    accumulator = ''
+    has_opened = False
+    for char in line:
+        if char == '__':
+            if not has_opened:
+                accumulator += '<b>'
+                has_opened = True
+            else:
+                accumulator += '</b>'
+                has_opened = False
+            # clever way:
+            # has_opened = not has_opened
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_code_inline(line):
@@ -166,7 +259,19 @@ def compile_code_inline(line):
     >>> compile_code_inline('```python3')
     '```python3'
     '''
-    return line
+    accumulator = ''
+    has_opened = False
+    for char in line:
+        if char == '`':
+            if not has_opened:
+                accumulator += '<code>'
+                has_opened = True
+            else:
+                accumulator += '</code>'
+                has_opened = False
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_links(line):
@@ -186,7 +291,19 @@ def compile_links(line):
     >>> compile_links('this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040')
     'this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040'
     '''
-    return line
+    accumulator = ''
+    has_opened = False
+    for char in line:
+        if char == '[course webpage] (':
+            if not has_opened:
+                accumulator += '<a href ="'
+                has_opened = True
+            else:
+                accumulator += '</code>'
+                has_opened = False
+        else:
+            accumulator += char
+    return accumulator
 
 
 def compile_images(line):
@@ -205,4 +322,3 @@ def compile_images(line):
     >>> compile_images('This is an image of Mike Izbicki: ![Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
     'This is an image of Mike Izbicki: <img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
     '''
-    return line
