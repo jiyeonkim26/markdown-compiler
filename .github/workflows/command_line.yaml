@@ -17,5 +17,5 @@ jobs:
       - name: Run tests
         run: |
           pip3 install .
-          markdown-compiler --input_file=README.md
-          markdown-compiler --input_file=README.md --add_css
+          markdown-compiler --input_file=example/README.md
+          markdown-compiler --input_file=example/README.md --add_css
