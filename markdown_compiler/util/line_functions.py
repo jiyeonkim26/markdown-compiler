@@ -247,8 +247,7 @@ def compile_links(line):
     link = line[end_text + 2:end_link]
 
     return (
-        line[:start_text] + f'<a href="{link}">{text}</a>' +
-        line[end_link + 1:]
+        line[:start_text] + f'<a href="{link}">{text}</a>' + line[end_link + 1:]
     )
 
 
@@ -269,6 +268,5 @@ def compile_images(line):
     link = line[end_text + 2:end_link]
 
     return (
-        line[:start_text] + f'<img src="{link}" alt="{text}" />' +
-        line[end_link + 1:]
+        line[:start_text] + f'<img src="{link}" alt="{text}" />' + line[end_link + 1:]
     )
