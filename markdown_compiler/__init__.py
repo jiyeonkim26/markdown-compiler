@@ -21,27 +21,34 @@ def compile_lines(text):
     Apply all markdown transformations to the input text.
 
     NOTE:
-    This function calls all of the functions you created above to convert the full markdown file into HTML.
-    This function also handles multiline markdown like <p> tags and <pre> tags;
-    because these are multiline commands, they cannot work with the line-by-line style of commands above.
+    This function calls all of the functions you created above to
+    convert the full markdown file into HTML. This function also
+    handles multiline markdown like <p> tags and <pre> tags;
+    because these are multiline commands, they cannot work with
+    the line-by-line style of commands above.
 
     NOTE:
     The doctests are divided into two sets.
-    The first set of doctests below show how this function adds <p> tags and calls the functions above.
+    The first set of doctests below show how this function
+    adds <p> tags and calls the functions above.
     Once you implement the functions above correctly,
     then this first set of doctests will pass.
 
     NOTE:
-    For your assignment, the most important thing to take away from these test cases is how multiline tests can be formatted.
+    For your assignment, the most important thing to take away
+    from these test cases is how multiline tests can be formatted.
 
-    >>> compile_lines('This is a **bold** _italic_ `code` test.\nAnd *another line*!\n')
-    '<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.\nAnd <i>another line</i>!\n</p>'
+    >>> compile_lines('This is a **bold** _italic_ `code` test.
+    \nAnd *another line*!\n')
+    '<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.
+    \nAnd <i>another line</i>!\n</p>'
 
     >>> compile_lines("""
     ... This is a **bold** _italic_ `code` test.
     ... And *another line*!
     ... """)
-    '\n<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.\nAnd <i>another line</i>!\n</p>'
+    '\n<p>\nThis is a <b>bold</b> <i>italic</i> <code>code</code> test.
+    \nAnd <i>another line</i>!\n</p>'
 
     >>> print(compile_lines("""
     ... This is a **bold** _italic_ `code` test.
@@ -76,7 +83,8 @@ def compile_lines(text):
 
     HINT:
     In order to get some of these test cases to pass,
-    you will have to both add new code and remove some of the existing code that I provide you.
+    you will have to both add new code and remove some of the
+    existing code that I provide you.
 
     >>> print(compile_lines("""
     ... ```
@@ -146,9 +154,9 @@ def compile_lines(text):
     in_paragraph = False
     for line in lines:
         line = line.strip()
-        if line=='':
+        if line == '':
             if in_paragraph:
-                line='</p>'
+                line = '</p>'
                 in_paragraph = False
         else:
             if line[0] != '#' and not in_paragraph:
@@ -165,6 +173,7 @@ def compile_lines(text):
             line = compile_links(line)
         new_lines.append(line)
     new_text = '\n'.join(new_lines)
+
     return new_text
 
 
@@ -174,14 +183,18 @@ def markdown_to_html(markdown, add_css):
     optionally adding CSS formatting.
 
     NOTE:
-    This function is separated out from the `compile_lines` function so that the doctests are much simpler.
+    This function is separated out from the `compile_lines`
+    function so that the doctests are much simpler.
     In particular, by splitting these functions in two,
-    there's no need to add all of the HTML boilerplate code to the doctests in `compile_lines`.
+    there's no need to add all of the HTML boilerplate
+    code to the doctests in `compile_lines`.
 
     NOTE:
-    The code for this function is simple enough that we don't even have a "real" doctest.
-    The only purpose of this doctest is to run the function and ensure that there are no errors.
-    The `assert` function prints no output whenever the input is "truthy".
+    The code for this function is simple enough that we
+    don't even have a "real" doctest. The only purpose of
+    this doctest is to run the function and ensure that
+    there are no errors. The `assert` function prints no
+    output whenever the input is "truthy".
 
     >>> assert(markdown_to_html('this *is* a _test_', False))
     >>> assert(markdown_to_html('this *is* a _test_', True))
@@ -199,7 +212,7 @@ def markdown_to_html(markdown, add_css):
 <link rel="stylesheet" href="https://izbicki.me/css/code.css" />
 <link rel="stylesheet" href="https://izbicki.me/css/default.css" />
         '''
-    html+='''
+    html += '''
 </head>
 <body>
     '''+compile_lines(markdown)+'''
@@ -215,11 +228,11 @@ def minify(html):
     and convert all whitespace characters into spaces.
 
     NOTE:
-    When we transfer HTML files over the internet,
-    we'd like them to be as small as possible in order to save bandwidth and make the webpage load faster.
-    Minifying html documents is an important step for webservers.
-    It may not seem like much, but at the scale of Google/Facebook,
-    it can reduce costs by millions of dollars annually.
+    When we transfer HTML files over the internet, we'd like them to
+    be as small as possible in order to save bandwidth and make the
+    webpage load faster. Minifying html documents is an important step
+    for webservers. It may not seem like much, but at the scale of
+    Google/Facebook, it can reduce costs by millions of dollars annually.
 
     >>> minify('       ')
     ''
@@ -246,10 +259,13 @@ def convert_file(input_file, add_css):
     then the output filename will be `README.html`.
 
     NOTE:
-    It is difficult to write meaningful doctests for functions that deal with files.
-    This is because we would have to create a bunch of different files to do so.
+    It is difficult to write meaningful doctests for
+    functions that deal with files. This is because we
+    would have to create a bunch of different files to do so.
     Therefore, there are no tests for this function.
-    But we can still be confident that this function will work because of the extensive tests on the "helper functions" that this function depends on.
+    But we can still be confident that this function will
+    work because of the extensive tests on the "helper functions"
+    that this function depends on.
     '''
 
     # validate that the input file is a markdown file
