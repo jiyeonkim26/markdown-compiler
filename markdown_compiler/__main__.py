@@ -31,7 +31,9 @@ If you use AI as a crutch to solve the simple problems for you,
 you will not be able to solve the more difficult problems.
 '''
 
-from markdown_compiler import markdown_to_html
+from markdown_compiler import (
+    convert_file
+)
 
 def main():
     # process command line arguments

@@ -291,19 +291,19 @@ def compile_links(line):
     >>> compile_links('this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040')
     'this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040'
     '''
-    accumulator = ''
-    has_opened = False
-    for char in line:
-        if char == '[course webpage] (':
-            if not has_opened:
-                accumulator += '<a href ="'
-                has_opened = True
-            else:
-                accumulator += '</code>'
-                has_opened = False
-        else:
-            accumulator += char
-    return accumulator
+    start_text = line.find("[")
+    end_text = line.find("]", start_text + 1)
+    
+    end_link = line.find(')', end_text + 2)
+    if end_link == -1:
+        return line
+
+    text = line[start_text + 1:end_text]
+    link = line[end_text + 2:end_link]
+
+    return (
+        line[:start_text] + f'<a href="{link}">{text}</a>' + line[end_link + 1:]
+    )
 
 
 def compile_images(line):
@@ -322,3 +322,21 @@ def compile_images(line):
     >>> compile_images('This is an image of Mike Izbicki: ![Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
     'This is an image of Mike Izbicki: <img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
     '''
+    start_text = line.find("!")
+    if start_text + 1 >= len(line) or line[start_text + 1] != "[":
+        return line
+
+    end_text = line.find("]", start_text + 2)
+    if end_text + 1 >= len(line) or line[end_text + 1] != "(":
+        return line
+
+    end_link = line.find(')', end_text + 2)
+    if end_link == -1:
+        return line
+
+    text = line[start_text + 2:end_text]
+    link = line[end_text + 2:end_link]
+
+    return (
+        line[:start_text] + f'<img src="{link}" alt="{text}" />' + line[end_link + 1:]
+    )
