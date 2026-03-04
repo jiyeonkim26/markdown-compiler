@@ -152,25 +152,43 @@ def compile_lines(text):
     new_lines = []
 
     in_paragraph = False
+    in_code = False
+
     for line in lines:
-        line = line.strip()
-        if line == '':
+        stripped = line.strip()
+        if stripped == "```":   # was there a ``` ? --> close the code block
+            if in_code:
+                new_lines.append("</pre>")
+                in_code = False
+            else:
+                new_lines.append("<pre>")
+                in_code = True
+            continue
+        if in_code:
+            new_lines.append(line)
+            continue
+        if stripped == '':
             if in_paragraph:
-                line = '</p>'
+                new_lines.append("</p>")
                 in_paragraph = False
+            else:
+                new_lines.append('')
+            continue
+
         else:
-            if line[0] != '#' and not in_paragraph:
+            if not in_paragraph and not stripped.startswith('#'):  # '#' is heading
+                new_lines.append("<p>")
                 in_paragraph = True
-                line = '<p>\n' + line
-            line = compile_headers(line)
-            line = compile_strikethrough(line)
-            line = compile_bold_stars(line)
-            line = compile_bold_underscore(line)
-            line = compile_italic_star(line)
-            line = compile_italic_underscore(line)
-            line = compile_code_inline(line)
-            line = compile_images(line)
-            line = compile_links(line)
+
+        line = compile_headers(line)
+        line = compile_strikethrough(line)
+        line = compile_bold_stars(line)
+        line = compile_bold_underscore(line)
+        line = compile_italic_star(line)
+        line = compile_italic_underscore(line)
+        line = compile_code_inline(line)
+        line = compile_images(line)
+        line = compile_links(line)
         new_lines.append(line)
     new_text = '\n'.join(new_lines)
 
