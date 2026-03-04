@@ -75,23 +75,24 @@ def compile_italic_star(line):
     '*'
     '''
     accumulator = ''
-    has_opened = False  # meaning: have we seen a * yet?
-    for char in line:
-        # print is useful for debugging to help understand what code is doing
-        # print(char)
-        # super common mistake is to either put '' where they don't belong
-        # or not use '' when needed
-        if char == '*':
+    has_opened = False
+    start_text = line.find('*')
+    end_text = line.find('*', start_text + 1)
+
+    i = 0
+    while i < len(line):
+        if line[i:i+1] == '*' and end_text != -1:
             if not has_opened:
                 accumulator += '<i>'
                 has_opened = True
             else:
                 accumulator += '</i>'
                 has_opened = False
-            # clever way:
-            # has_opened = not has_opened
+            i += 1
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
+
     return accumulator
 
 
@@ -114,23 +115,24 @@ def compile_italic_underscore(line):
     '_'
     '''
     accumulator = ''
-    has_opened = False  # meaning: have we seen a _ yet?
-    for char in line:
-        # print is useful for debugging
-        # print(char)
-        # super common mistake is to either put '' where they don't belong
-        # or not use '' when needed
-        if char == '_':
+    has_opened = False
+    start_text = line.find('_')
+    end_text = line.find('_', start_text + 1)
+
+    i = 0
+    while i < len(line):
+        if line[i:i+1] == '_' and end_text != -1:
             if not has_opened:
                 accumulator += '<i>'
                 has_opened = True
             else:
                 accumulator += '</i>'
                 has_opened = False
-            # clever way:
-            # has_opened = not has_opened
+            i += 1
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
+
     return accumulator
 
 
@@ -170,21 +172,23 @@ def compile_bold_stars(line):
     '''
     accumulator = ''
     has_opened = False
-    start_text = line.find("**")
-    end_text = line.find("**", start_text + 1)
 
-    for char in line:
-        if char == '**' and end_text != -1:
-            if not has_opened:
+    i = 0
+    while i < len(line):
+        if line[i:i+2] == '**':
+            start_text = line.find('**')
+            end_text = line.find('**', start_text + 2)
+            if not has_opened and end_text != -1:
                 accumulator += '<b>'
                 has_opened = True
             else:
                 accumulator += '</b>'
                 has_opened = False
-            # clever way:
-            # has_opened = not has_opened
+            i += 2  # skip both asterisks
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
+
     return accumulator
 
 
@@ -208,21 +212,23 @@ def compile_bold_underscore(line):
     '''
     accumulator = ''
     has_opened = False
-    start_text = line.find("__")
-    end_text = line.find("__", start_text + 1)
 
-    for char in line:
-        if char == '__' and end_text != -1:
-            if not has_opened:
+    i = 0
+    while i < len(line):
+        if line[i:i+2] == '__':
+            start_text = line.find('__')
+            end_text = line.find('__', start_text + 2)
+            if not has_opened and end_text != -1:
                 accumulator += '<b>'
                 has_opened = True
             else:
                 accumulator += '</b>'
                 has_opened = False
-            # clever way:
-            # has_opened = not has_opened
+            i += 2  # skip both asterisks
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
+
     return accumulator
 
 
