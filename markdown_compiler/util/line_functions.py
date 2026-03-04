@@ -1,6 +1,5 @@
 '''
-Each of the functions in this file takes a single line of input and
-transforms the line in some way.
+Each of the functions in this file takes a single line of input and transforms the line in some way.
 '''
 
 
@@ -11,8 +10,7 @@ def compile_headers(line):
     HINT:
     This is the simplest function to implement in this assignment.
     Use a slices to extract the first part of the line,
-    then use if statements to check if they match the
-    appropriate header markdown commands.
+    then use if statements to check if they match the appropriate header markdown commands.
 
     >>> compile_headers('# This is the main header')
     '<h1> This is the main header</h1>'
@@ -29,24 +27,18 @@ def compile_headers(line):
     >>> compile_headers('      # this is not a header')
     '      # this is not a header'
     '''
-    if line[:2] == '# ':
-        # why doesn't this line do anything?
-        # answer: strings are *immutable* in python; i.e. they can never
-        # change so functions that seem like they should change the string
-        # actually just return a new string
-        # without line = line.replace the replacement is not assigned
-        # to the line
-        line = line.replace('# ', '<h1> ') + '</h1>'
-    if line[:3] == '## ':
-        line = line.replace('## ', '<h2> ') + '</h2>'
-    if line[:4] == '### ':
-        line = line.replace('### ', '<h3> ') + '</h3>'
-    if line[:5] == '#### ':
-        line = line.replace('#### ', '<h4> ') + '</h4>'
-    if line[:6] == '##### ':
-        line = line.replace('##### ', '<h5> ') + '</h5>'
-    if line[:7] == '###### ':
-        line = line.replace('###### ', '<h6> ') + '</h6>'
+    if line.startswith('# '):
+        return '<h1>' + line[1:] + '</h1>'
+    if line.startswith('## '):
+        return '<h2>' + line[2:] + '</h2>'
+    if line.startswith('### '):
+        return '<h3>' + line[3:] + '</h3>'
+    if line.startswith('#### '):
+        return '<h4>' + line[4:] + '</h4>'
+    if line.startswith('##### '):
+        return '<h5>' + line[5:] + '</h5>'
+    if line.startswith('###### '):
+        return '<h6>' + line[6:] + '</h6>'
     return line
 
 
@@ -55,12 +47,9 @@ def compile_italic_star(line):
     Convert "*italic*" into "<i>italic</i>".
 
     HINT:
-    Italics require carefully tracking the beginning and
-    ending positions of the text to be replaced.
-    This is similar to the `delete_HTML` function that
-    we implemented in class.
-    It's a tiny bit more complicated since we are not just
-    deleting substrings from the text,
+    Italics require carefully tracking the beginning and ending positions of the text to be replaced.
+    This is similar to the `delete_HTML` function that we implemented in class.
+    It's a tiny bit more complicated since we are not just deleting substrings from the text,
     but also adding replacement substrings.
 
     >>> compile_italic_star('*This is italic!* This is not italic.')
@@ -74,25 +63,27 @@ def compile_italic_star(line):
     >>> compile_italic_star('*')
     '*'
     '''
-    accumulator = ''
-    has_opened = False
-    start_text = line.find('*')
-    end_text = line.find('*', start_text + 1)
+    if line.count('*') < 2:
+        return line
 
-    i = 0
-    while i < len(line):
-        if line[i:i+1] == '*' and end_text != -1:
+    accumulator = ''
+    has_opened = False   # have we seen a * yet?
+
+    for char in line:
+        # print is useful to debug to help understand what the code is doing
+        # print(char)
+        # common mistake is to put '' when not needed/not put when needed
+        if char == '*':
             if not has_opened:
                 accumulator += '<i>'
                 has_opened = True
             else:
                 accumulator += '</i>'
                 has_opened = False
-            i += 1
+            # clever way:
+            # has_opened = not has_opened
         else:
-            accumulator += line[i]
-            i += 1
-
+            accumulator += char   # only add character if it is not equal to *
     return accumulator
 
 
@@ -114,31 +105,34 @@ def compile_italic_underscore(line):
     >>> compile_italic_underscore('_')
     '_'
     '''
-    accumulator = ''
-    has_opened = False
-    start_text = line.find('_')
-    end_text = line.find('_', start_text + 1)
+    if line.count('_') < 2:
+        return line
 
-    i = 0
-    while i < len(line):
-        if line[i:i+1] == '_' and end_text != -1:
+    accumulator = ''
+    has_opened = False   # have we seen a * yet?
+
+    for char in line:
+        # print is useful to debug to help understand what the code is doing
+        # print(char)
+        # common mistake is to put '' when not needed/not put when needed
+        if char == '_':
             if not has_opened:
                 accumulator += '<i>'
                 has_opened = True
             else:
                 accumulator += '</i>'
                 has_opened = False
-            i += 1
+            # clever way:
+            # has_opened = not has_opened
         else:
-            accumulator += line[i]
-            i += 1
-
+            accumulator += char
+            # only add character if it is not equal to *
     return accumulator
 
 
 def compile_strikethrough(line):
     '''
-     Convert "~~strikethrough~~" to "<ins>strikethrough</ins>".
+    Convert "~~strikethrough~~" to "<ins>strikethrough</ins>".
 
     HINT:
     The strikethrough annotations are very similar to implement as the italic function.
@@ -263,17 +257,13 @@ def compile_code_inline(line):
     Add <code> tags.
 
     HINT:
-    This function is like the italics functions because
-    inline code uses only a single character as a delimiter.
-    It is more complex, however, because inline code blocks
-    can contain valid HTML inside of them, but we do not want
-    that HTML to get rendered as HTML. Therefore, we must convert
-    the `<` and `>` signs into `&lt;` and `&gt;` respectively.
+    This function is like the italics functions because inline code uses only a single character as a delimiter.
+    It is more complex, however, because inline code blocks can contain valid HTML inside of them,
+    but we do not want that HTML to get rendered as HTML.
+    Therefore, we must convert the `<` and `>` signs into `&lt;` and `&gt;` respectively.
 
-    >>> compile_code_inline('You can use backticks like this (`1+2`)
-    ... to include code in the middle of text.')
-    'You can use backticks like this (<code>1+2</code>) to include
-    ... code in the middle of text.'
+    >>> compile_code_inline('You can use backticks like this (`1+2`) to include code in the middle of text.')
+    'You can use backticks like this (<code>1+2</code>) to include code in the middle of text.'
     >>> compile_code_inline('This is inline code: `1+2`')
     'This is inline code: <code>1+2</code>'
     >>> compile_code_inline('`1+2`')
@@ -294,20 +284,22 @@ def compile_code_inline(line):
 
     accumulator = ''
     has_opened = False
-    i = 0
 
-    while i < len(line):
-        if line[i:i + 1] == '`':
+    for char in line:
+        if char == '`':
             if not has_opened:
                 accumulator += '<code>'
                 has_opened = True
             else:
                 accumulator += '</code>'
                 has_opened = False
-            i += 1
         else:
-            accumulator += line[i]
-            i += 1
+            if has_opened and char == "<":
+                accumulator += '&lt;'
+            elif has_opened and char == ">":
+                accumulator += '&gt;'
+            else:
+                accumulator += char
     return accumulator
 
 
@@ -336,6 +328,7 @@ def compile_links(line):
     if end_text == -1:
         return line
 
+    # check to see if ( immediately follows or if there is any char after ]
     if end_text + 1 >= len(line) or line[end_text + 1] != "(":
         return line
 
@@ -349,6 +342,8 @@ def compile_links(line):
     return (
         line[:start_text] + f'<a href="{link}">{text}</a>' + line[end_link + 1:]
     )
+
+# need the before/after of the markdown link as well
 
 
 def compile_images(line):
@@ -378,6 +373,7 @@ def compile_images(line):
     if end_text == -1:
         return line
 
+    # check to see if ( immediately follows or if there is any char after ]
     if end_text + 1 >= len(line) or line[end_text + 1] != "(":
         return line
 
