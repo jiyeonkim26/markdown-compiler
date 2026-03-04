@@ -109,12 +109,9 @@ def compile_italic_underscore(line):
         return line
 
     accumulator = ''
-    has_opened = False   # have we seen a * yet?
+    has_opened = False
 
     for char in line:
-        # print is useful to debug to help understand what the code is doing
-        # print(char)
-        # common mistake is to put '' when not needed/not put when needed
         if char == '_':
             if not has_opened:
                 accumulator += '<i>'
@@ -122,11 +119,8 @@ def compile_italic_underscore(line):
             else:
                 accumulator += '</i>'
                 has_opened = False
-            # clever way:
-            # has_opened = not has_opened
         else:
             accumulator += char
-            # only add character if it is not equal to *
     return accumulator
 
 
@@ -328,7 +322,6 @@ def compile_links(line):
     if end_text == -1:
         return line
 
-    # check to see if ( immediately follows or if there is any char after ]
     if end_text + 1 >= len(line) or line[end_text + 1] != "(":
         return line
 
@@ -373,7 +366,6 @@ def compile_images(line):
     if end_text == -1:
         return line
 
-    # check to see if ( immediately follows or if there is any char after ]
     if end_text + 1 >= len(line) or line[end_text + 1] != "(":
         return line
 
