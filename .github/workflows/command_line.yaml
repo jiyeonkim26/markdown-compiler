@@ -16,6 +16,6 @@ jobs:
           python-version: ${{matrix.python}}
       - name: Run tests
         run: |
-          pip3 install .
+          pip3 install markdown_compiler
           markdown-compiler --input_file=README.md
           markdown-compiler --input_file=README.md --add_css
