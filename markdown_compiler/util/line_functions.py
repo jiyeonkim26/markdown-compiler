@@ -170,9 +170,12 @@ def compile_bold_stars(line):
     '''
     accumulator = ''
     has_opened = False
+    start_text = line.find("**")
+    end_text = line.find("**", start_text + 1)
+
     for char in line:
         if char == '**':
-            if not has_opened:
+            if not has_opened and end_text != -1:
                 accumulator += '<b>'
                 has_opened = True
             else:
