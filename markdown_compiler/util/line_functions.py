@@ -174,8 +174,8 @@ def compile_bold_stars(line):
     end_text = line.find("**", start_text + 1)
 
     for char in line:
-        if char == '**':
-            if not has_opened and end_text != -1:
+        if char == '**' and end_text != -1:
+            if not has_opened:
                 accumulator += '<b>'
                 has_opened = True
             else:
@@ -208,8 +208,11 @@ def compile_bold_underscore(line):
     '''
     accumulator = ''
     has_opened = False
+    start_text = line.find("__")
+    end_text = line.find("__", start_text + 1)
+
     for char in line:
-        if char == '__':
+        if char == '__' and end_text != -1:
             if not has_opened:
                 accumulator += '<b>'
                 has_opened = True
