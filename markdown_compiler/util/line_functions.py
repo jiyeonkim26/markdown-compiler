@@ -137,6 +137,25 @@ def compile_italic_underscore(line):
 
 
 def compile_strikethrough(line):
+    '''
+     Convert "~~strikethrough~~" to "<ins>strikethrough</ins>".
+
+    HINT:
+    The strikethrough annotations are very similar to implement as the italic function.
+    The difference is that there are two delimiting characters instead of one.
+    This will require carefully thinking about the range of your for loop and all of your list indexing.
+
+    >>> compile_strikethrough('~~This is strikethrough!~~ This is not strikethrough.')
+    '<ins>This is strikethrough!</ins> This is not strikethrough.'
+    >>> compile_strikethrough('~~This is strikethrough!~~')
+    '<ins>This is strikethrough!</ins>'
+    >>> compile_strikethrough('This is ~~strikethrough~~!')
+    'This is <ins>strikethrough</ins>!'
+    >>> compile_strikethrough('This is not ~~strikethrough!')
+    'This is not ~~strikethrough!'
+    >>> compile_strikethrough('~~')
+    '~~'
+    '''
     accumulator = ''
     has_opened = False
     for char in line:
@@ -170,25 +189,25 @@ def compile_bold_stars(line):
     >>> compile_bold_stars('**')
     '**'
     '''
+    if line.count('**') < 2:
+        return line
+
     accumulator = ''
     has_opened = False
-
     i = 0
+
     while i < len(line):
-        if line[i:i+2] == '**':
-            start_text = line.find('**')
-            end_text = line.find('**', start_text + 2)
-            if not has_opened and end_text != -1:
+        if line[i:i + 2] == '**':
+            if not has_opened:
                 accumulator += '<b>'
                 has_opened = True
             else:
                 accumulator += '</b>'
                 has_opened = False
-            i += 2  # skip both asterisks
+            i += 2
         else:
             accumulator += line[i]
             i += 1
-
     return accumulator
 
 
@@ -210,25 +229,25 @@ def compile_bold_underscore(line):
     >>> compile_bold_underscore('__')
     '__'
     '''
+    if line.count('__') < 2:
+        return line
+
     accumulator = ''
     has_opened = False
-
     i = 0
+
     while i < len(line):
-        if line[i:i+2] == '__':
-            start_text = line.find('__')
-            end_text = line.find('__', start_text + 2)
-            if not has_opened and end_text != -1:
+        if line[i:i + 2] == '__':
+            if not has_opened:
                 accumulator += '<b>'
                 has_opened = True
             else:
                 accumulator += '</b>'
                 has_opened = False
-            i += 2  # skip both asterisks
+            i += 2
         else:
             accumulator += line[i]
             i += 1
-
     return accumulator
 
 
@@ -263,18 +282,25 @@ def compile_code_inline(line):
     >>> compile_code_inline('```python3')
     '```python3'
     '''
+    if line.count('`') < 1:
+        return line
+
     accumulator = ''
     has_opened = False
-    for char in line:
-        if char == '`':
+    i = 0
+
+    while i < len(line):
+        if line[i:i + 1] == '`':
             if not has_opened:
                 accumulator += '<code>'
                 has_opened = True
             else:
                 accumulator += '</code>'
                 has_opened = False
+            i += 1
         else:
-            accumulator += char
+            accumulator += line[i]
+            i += 1
     return accumulator
 
 
@@ -296,7 +322,16 @@ def compile_links(line):
     'this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040'
     '''
     start_text = line.find("[")
+    if start_text == -1:
+        return line
+
     end_text = line.find("]", start_text + 1)
+    if end_text == -1:
+        return line
+
+    if end_text + 1 >= len(line) or line[end_text + 1] != "(":
+        return line
+
     end_link = line.find(')', end_text + 2)
     if end_link == -1:
         return line
@@ -305,8 +340,7 @@ def compile_links(line):
     link = line[end_text + 2:end_link]
 
     return (
-        line[:start_text] + f'<a href="{link}">{text}</a>' + line
-        [end_link + 1:]
+        line[:start_text] + f'<a href="{link}">{text}</a>' + line[end_link + 1:]
     )
 
 
@@ -327,10 +361,16 @@ def compile_images(line):
     'This is an image of Mike Izbicki: <img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
     '''
     start_text = line.find("!")
+    if start_text == -1:
+        return line
+
     if start_text + 1 >= len(line) or line[start_text + 1] != "[":
         return line
 
     end_text = line.find("]", start_text + 2)
+    if end_text == -1:
+        return line
+
     if end_text + 1 >= len(line) or line[end_text + 1] != "(":
         return line
 
@@ -342,6 +382,5 @@ def compile_images(line):
     link = line[end_text + 2:end_link]
 
     return (
-        line[:start_text] + f'<img src="{link}" alt="{text}" />' + line
-        [end_link + 1:]
+        line[:start_text] + f'<img src="{link}" alt="{text}" />' + line[end_link + 1:]
     )
