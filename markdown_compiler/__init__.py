@@ -176,7 +176,7 @@ def compile_lines(text):
             continue
 
         else:
-            if not in_paragraph and not stripped.startswith('#'):  # '#' is heading
+            if not in_paragraph and not stripped.startswith('#'):
                 new_lines.append("<p>")
                 in_paragraph = True
 
